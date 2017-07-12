@@ -13,9 +13,12 @@
     "lint": "eslint --ext .js,.vue src test/e2e/specs"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "babel-polyfill": "^6.23.0",
     "babel-runtime": "^6.23.0",
+    "better-scroll": "^0.4.0",
     "fastclick": "^1.0.6",
+    "jsonp": "^0.2.1",
     "vue": "^2.3.3",
     "vue-router": "^2.3.1"
   },

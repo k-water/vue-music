@@ -5,9 +5,10 @@ import 'babel-polyfill'
 import fastclick from 'fastclick'
 import App from './App'
 import router from './router'
-
 import './common/stylus/index.styl'
+import axios from './axios'
 
+Vue.use(axios)
 Vue.config.productionTip = false
 fastclick.attach(document.body)
   /* eslint-disable no-new */
