@@ -1,7 +1,7 @@
 <template>
-  <scroll class="list-view" :data="data">
+  <scroll class="list-view" :data="data" ref="listView">
     <ul>
-      <li v-for="group in data" class="list-group" :key="group.key">
+      <li v-for="group in data" class="list-group" :key="group.key" ref="listGroup">
         <h2 class="list-group-title"> {{group.title}} </h2>
         <ul>
           <li class="list-group-item" v-for="item in group.items" :key="item.key">
@@ -11,19 +11,66 @@
         </ul>
       </li>
     </ul>
+    
+    <!--右侧快速定位列表-->
+    <div class="list-shortcut" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove">
+      <ul>
+        <li class="item" v-for="(item, index) in shortcutList" :data-index="index" :key="item.key">
+          {{item}}
+        </li>
+      </ul>
+    </div>
+    <div class="loading-container" v-show="!data.length">
+      <loading></loading>
+    </div>
   </scroll>
 </template>
 <script>
   import Scroll from 'base/scroll'
+  import Loading from 'base/loading'
+  import { getData } from 'common/js/dom'
+
+  const ANCHOR_HEIGHT = 18
   export default {
+    created() {
+      this.touch = {}
+    },
     props: {
       data: {
         type: Array,
         default: []
       }
     },
+    computed: {
+      shortcutList() {
+        return this.data.map((group) => {
+          return group.title.substr(0, 1)
+        })
+      }
+    },
     components: {
-      Scroll
+      Scroll,
+      Loading
+    },
+    methods: {
+      onShortcutTouchStart(e) {
+        // 获取当前触摸的index
+        let anchorIndex = getData(e.target, 'index')
+        let firstTouch = e.touches[0]
+        this.touch.y1 = firstTouch.pageY
+        this.touch.anchorIndex = anchorIndex
+        this.$refs.listView.scrollToElement(this.$refs.listGroup[anchorIndex], 0)
+      },
+      onShortcutTouchMove(e) {
+        let firstTouch = e.touches[0]
+        this.touch.y2 = firstTouch.pageY
+
+        // 向下取整
+        let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
+        // 获取移动的距离
+        let anchorIndex = parseInt(this.touch.anchorIndex) + delta
+        this.$refs.listView.scrollToElement(this.$refs.listGroup[anchorIndex], 0)
+      }
     }
   }
 </script>
