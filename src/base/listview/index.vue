@@ -33,6 +33,9 @@
     <div class="loading-container" v-show="!data.length">
       <loading></loading>
     </div>
+    <div class="list-fixed" v-show="fixedTitle" ref="fixed">
+      <h1 class="fixed-title"> {{fixedTitle}} </h1>
+    </div>
   </scroll>
 </template>
 <script>
@@ -41,6 +44,7 @@
   import { getData } from 'common/js/dom'
 
   const ANCHOR_HEIGHT = 18
+  const TITLE_HEIGHT = 30
   export default {
     created() {
       this.touch = {}
@@ -51,7 +55,8 @@
     data() {
       return {
         scrollY: -1,
-        currentIndex: 0
+        currentIndex: 0,
+        diff: -1
       }
     },
     props: {
@@ -65,6 +70,10 @@
         return this.data.map((group) => {
           return group.title.substr(0, 1)
         })
+      },
+      fixedTitle() {
+        if (this.scrollY > 0) return
+        return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
       }
     },
     components: {
@@ -93,6 +102,8 @@
           // 向上滚动srcollY的值为负 所以加上负号
           if (-newY >= height1 && -newY < height2) {
             this.currentIndex = i
+            this.diff = height2 + newY
+            // console.log(this.diff)
             // console.log(this.currentIndex)
             return
           }
@@ -100,6 +111,15 @@
         // bottom
 
         this.currentIndex = listHeight.length - 2
+      },
+      diff(newVal) {
+        let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
+        if (this.fixedTop === fixedTop) {
+          return
+        }
+        this.fixedTop = fixedTop
+        // console.log(this.fixedTop)
+        this.$refs.fixed.style.transform = `translate3d(0, ${fixedTop}px, 0)`
       }
     },
     methods: {
