@@ -5,10 +5,14 @@ import 'babel-polyfill'
 import fastclick from 'fastclick'
 import App from './App'
 import router from './router'
+import VueLazyLoad from 'vue-lazyload'
 import './common/stylus/index.styl'
 // import axios from './axios'
 
 // Vue.use(axios)
+Vue.use(VueLazyLoad, {
+  loading: require('./components/m-header/logo@2x.png')
+})
 Vue.config.productionTip = false
 fastclick.attach(document.body)
   /* eslint-disable no-new */
