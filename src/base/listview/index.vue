@@ -1,5 +1,11 @@
 <template>
-  <scroll class="list-view" :data="data" ref="listView">
+  <scroll class="list-view" 
+    :data="data" 
+    ref="listView"
+    :listenScroll="listenScroll"
+    :probeType="probeType"
+    @scroll="scroll"
+  >
     <ul>
       <li v-for="group in data" class="list-group" :key="group.key" ref="listGroup">
         <h2 class="list-group-title"> {{group.title}} </h2>
@@ -15,7 +21,11 @@
     <!--右侧快速定位列表-->
     <div class="list-shortcut" @touchstart="onShortcutTouchStart" @touchmove.stop.prevent="onShortcutTouchMove">
       <ul>
-        <li class="item" v-for="(item, index) in shortcutList" :data-index="index" :key="item.key">
+        <li class="item" v-for="(item, index) in shortcutList" 
+          :data-index="index" 
+          :key="item.key"
+          :class="{'current' : currentIndex === index}"
+        >
           {{item}}
         </li>
       </ul>
@@ -34,6 +44,15 @@
   export default {
     created() {
       this.touch = {}
+      this.listenScroll = true
+      this.listHeight = []
+      this.probeType = 3
+    },
+    data() {
+      return {
+        scrollY: -1,
+        currentIndex: 0
+      }
     },
     props: {
       data: {
@@ -52,6 +71,37 @@
       Scroll,
       Loading
     },
+    watch: {
+      data() {
+        setTimeout(() => {
+          this.calcHeight()
+        }, 20)
+      },
+
+      // 监听scrollY 获取currentIndex
+      scrollY(newY) {
+        const listHeight = this.listHeight
+        // top
+        if (newY > 0) {
+          this.currentIndex = 0
+          return
+        }
+        // middle
+        for (let i = 0; i < listHeight.length - 1; i++) {
+          let height1 = listHeight[i]
+          let height2 = listHeight[i + 1]
+          // 向上滚动srcollY的值为负 所以加上负号
+          if (-newY >= height1 && -newY < height2) {
+            this.currentIndex = i
+            // console.log(this.currentIndex)
+            return
+          }
+        }
+        // bottom
+
+        this.currentIndex = listHeight.length - 2
+      }
+    },
     methods: {
       onShortcutTouchStart(e) {
         // 获取当前触摸的index
@@ -59,7 +109,7 @@
         let firstTouch = e.touches[0]
         this.touch.y1 = firstTouch.pageY
         this.touch.anchorIndex = anchorIndex
-        this.$refs.listView.scrollToElement(this.$refs.listGroup[anchorIndex], 0)
+        this._scrollTo(anchorIndex)
       },
       onShortcutTouchMove(e) {
         let firstTouch = e.touches[0]
@@ -69,7 +119,38 @@
         let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
         // 获取移动的距离
         let anchorIndex = parseInt(this.touch.anchorIndex) + delta
-        this.$refs.listView.scrollToElement(this.$refs.listGroup[anchorIndex], 0)
+        this._scrollTo(anchorIndex)
+      },
+      // 监听scroll组件派发的scroll事件 获取滚动时的pos值
+      scroll(pos) {
+        this.scrollY = pos.y
+        // console.log(this.scrollY)
+      },
+      _scrollTo(index) {
+        if (!index && index !== 0) {
+          return
+        }
+
+        // 判断index上下限
+        if (index < 0) {
+          index = 0
+        } else if (index > this.listHeight.length - 2) {
+          index = this.listHeight.length - 2
+        }
+        this.scrollY = -this.listHeight[index]
+        this.$refs.listView.scrollToElement(this.$refs.listGroup[index], 0)
+      },
+      // 计算每一个singer list的height
+      calcHeight() {
+        this.listHeight = []
+        const list = this.$refs.listGroup
+        let height = 0
+        this.listHeight.push(height)
+        for (let i = 0; i < list.length; i++) {
+          let item = list[i]
+          height += item.clientHeight
+          this.listHeight.push(height)
+        }
       }
     }
   }

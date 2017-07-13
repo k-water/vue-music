@@ -18,6 +18,10 @@
       data: {
         type: Array,
         default: null
+      },
+      listenScroll: {
+        type: Boolean,
+        default: false
       }
     },
     mounted() {
@@ -34,6 +38,14 @@
           probeType: this.probeType,
           click: this.click
         })
+
+        if (this.listenScroll) {
+          let _this = this
+          this.scroll.on('scroll', pos => {
+            // 派发事件获取pos 值
+            _this.$emit('scroll', pos)
+          })
+        }
       },
       enable() {
         this.scroll && this.scroll.enable()
