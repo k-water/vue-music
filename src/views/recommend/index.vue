@@ -27,11 +27,15 @@
           </ul>
         </div>
       </div>
+      <div class="loading-container" v-show="!discList.length">
+        <loading></loading>
+      </div>
     </Scroll>
   </div>
 </template>
 
 <script>
+  import Loading from 'base/loading'
   import Slider from 'base/slider'
   import Scroll from 'base/scroll'
   import { getRecommend, getDiscList } from 'api/recommend'
@@ -49,7 +53,8 @@
     },
     components: {
       Slider,
-      Scroll
+      Scroll,
+      Loading
     },
     methods: {
       // jsonp
