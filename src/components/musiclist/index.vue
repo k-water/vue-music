@@ -26,7 +26,7 @@
       @scroll="scroll"
     >
       <div class="song-list-wrapper">
-        <songs-list :songs="songs"></songs-list>
+        <songs-list :songs="songs" @select="selectItem"></songs-list>
       </div>
       <!--加载loading-->
       <div class="loading-container" v-show="!songs.length">
@@ -36,9 +36,11 @@
   </div>
 </template>
 <script>
+  import { mapActions } from 'vuex'
   import Scroll from 'base/scroll'
   import SongsList from 'base/songslist'
   import Loading from 'base/loading'
+
   const RESERVED_HEIGHT = 40
   export default {
     props: {
@@ -61,11 +63,20 @@
       }
     },
     methods: {
+      ...mapActions([
+        'selectPlay'
+      ]),
       scroll(pos) {
         this.scrollY = pos.y
       },
       back() {
         this.$router.back()
+      },
+      selectItem(song, index) {
+        this.selectPlay({
+          list: this.songs,
+          index: index
+        })
       }
     },
     watch: {
