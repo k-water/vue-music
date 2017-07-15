@@ -17,6 +17,7 @@
     "babel-polyfill": "^6.23.0",
     "babel-runtime": "^6.23.0",
     "better-scroll": "^0.4.0",
+    "create-keyframe-animation": "^0.1.0",
     "fastclick": "^1.0.6",
     "jsonp": "^0.2.1",
     "vue": "^2.3.3",
