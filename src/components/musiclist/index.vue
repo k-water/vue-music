@@ -1,14 +1,23 @@
 <template>
   <div class="music-list">
-    <div class="back">
+    <!--返回上一层按钮-->
+    <div class="back" @click="back">
       <i class="icon-back">
       </i>
     </div>
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
+      <div class="play-wrapper" v-show="songs.length" ref="playBtn">
+        <div class="play">
+          <i class="icon-play"></i>
+          <span class="text">随机播放全部</span>
+        </div>
+      </div>
       <div class="filter"></div>
     </div>
+    <!--辅助层-->
     <div class="bg-layer" ref="layer"></div>
+    <!--滚动组件-->
     <scroll :data="songs" 
       class="list" 
       ref="list"
@@ -19,6 +28,7 @@
       <div class="song-list-wrapper">
         <songs-list :songs="songs"></songs-list>
       </div>
+      <!--加载loading-->
       <div class="loading-container" v-show="!songs.length">
         <loading></loading>
       </div>
@@ -53,24 +63,39 @@
     methods: {
       scroll(pos) {
         this.scrollY = pos.y
+      },
+      back() {
+        this.$router.back()
       }
     },
     watch: {
+      // 实时监听滚动距离 设置辅助层layer的translate3d的值 更好的交互体验
       scrollY(newY) {
         let zIndex = 0
+        let scale = 1
         let translateY = Math.max(this.minTranslateY, newY)
         this.$refs.layer.style['transform'] = `translate3d(0, ${translateY}px, 0)`
         this.$refs.layer.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`
+
+        const percent = Math.abs(newY / this.imageHeight)
+        if (newY > 0) {
+          scale = 1 + percent
+          zIndex = 10
+        }
 
         if (newY < this.minTranslateY) {
           zIndex = 10
           this.$refs.bgImage.style.paddingTop = 0
           this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`
+          this.$refs.playBtn.style.display = 'none'
         } else {
           this.$refs.bgImage.style.paddingTop = '70%'
           this.$refs.bgImage.style.height = 0
+          this.$refs.playBtn.style.display = ''
         }
         this.$refs.bgImage.style.zIndex = zIndex
+        this.$refs.bgImage.style['transform'] = `scale(${scale})`
+        this.$refs.bgImage.style['webkitTransform'] = `scale(${scale})`
       }
     },
     created() {
@@ -131,6 +156,7 @@
       position: relative
       width: 100%
       height: 0
+      // 撑开高度 
       padding-top: 70%
       transform-origin: top
       background-size: cover
