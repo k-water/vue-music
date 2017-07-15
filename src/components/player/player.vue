@@ -32,6 +32,16 @@
         </div>
         <!--底部按钮控制部分-->
         <div class="bottom">
+          <div class="progress-wrapper">
+            <span class="time time-l">
+              {{format(currentTime)}}
+            </span>
+            <div class="progress-bar-wrapper">
+            </div>
+            <span class="time time-r">
+              {{format(currentSong.duration)}}
+            </span>
+          </div>
           <div class="operators">
             <div class="icon i-left">
               <i class="icon-sequence"></i>
@@ -74,6 +84,7 @@
       ref="audio" 
       @canplay="ready" 
       @error="error"
+      @timeupdate="updateTime"
     >
     </audio>
   </div>
@@ -86,7 +97,8 @@
   export default {
     data() {
       return {
-        songReady: false
+        songReady: false,
+        currentTime: 0
       }
     },
     // 填充歌曲信息 控制歌曲播放
@@ -125,6 +137,23 @@
       }
     },
     methods: {
+      updateTime(e) {
+        this.currentTime = e.target.currentTime
+      },
+      format(interval) {
+        interval = interval | 0
+        const minute = interval / 60 | 0
+        const second = this._pad(interval % 60)
+        return `${minute}:${second}`
+      },
+      _pad(num, n = 2) {
+        let len = num.toString().length
+        while (len < n) {
+          num = '0' + num
+          len++
+        }
+        return num
+      },
       // 防止快速点击 产生错误
       ready() {
         this.songReady = true
