@@ -9,9 +9,18 @@
       <div class="filter"></div>
     </div>
     <div class="bg-layer" ref="layer"></div>
-    <scroll :data="songs" class="list" ref="list">
+    <scroll :data="songs" 
+      class="list" 
+      ref="list"
+      :probeType="probeType"
+      :listenScroll="listenScroll"
+      @scroll="scroll"
+    >
       <div class="song-list-wrapper">
         <songs-list :songs="songs"></songs-list>
+      </div>
+      <div class="loading-container" v-show="!songs.length">
+        <loading></loading>
       </div>
     </scroll>
   </div>
@@ -19,6 +28,8 @@
 <script>
   import Scroll from 'base/scroll'
   import SongsList from 'base/songslist'
+  import Loading from 'base/loading'
+  const RESERVED_HEIGHT = 40
   export default {
     props: {
       bgImage: {
@@ -34,17 +45,52 @@
         default: ''
       }
     },
+    data() {
+      return {
+        scrollY: 0
+      }
+    },
+    methods: {
+      scroll(pos) {
+        this.scrollY = pos.y
+      }
+    },
+    watch: {
+      scrollY(newY) {
+        let zIndex = 0
+        let translateY = Math.max(this.minTranslateY, newY)
+        this.$refs.layer.style['transform'] = `translate3d(0, ${translateY}px, 0)`
+        this.$refs.layer.style['webkitTransform'] = `translate3d(0, ${translateY}px, 0)`
+
+        if (newY < this.minTranslateY) {
+          zIndex = 10
+          this.$refs.bgImage.style.paddingTop = 0
+          this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`
+        } else {
+          this.$refs.bgImage.style.paddingTop = '70%'
+          this.$refs.bgImage.style.height = 0
+        }
+        this.$refs.bgImage.style.zIndex = zIndex
+      }
+    },
+    created() {
+      this.probeType = 3
+      this.listenScroll = true
+    },
     computed: {
       bgStyle() {
         return `background-image: url(${this.bgImage})`
       }
     },
     mounted() {
+      this.imageHeight = this.$refs.bgImage.clientHeight
+      this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT
       this.$refs.list.$el.style.top = `${this.$refs.bgImage.clientHeight}px`
     },
     components: {
       Scroll,
-      SongsList
+      SongsList,
+      Loading
     }
   }
 </script>
