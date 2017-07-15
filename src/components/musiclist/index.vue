@@ -1,10 +1,10 @@
 <template>
   <div class="music-list">
-    <!-->返回上一层</!-->
+    <!--返回上一层-->
     <div class="back" @click="back">
       <i class="icon-back"></i>
     </div>
-    <!-->歌曲信息</!-->
+    <!--歌曲信息-->
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
       <div class="play-wrapper">
@@ -14,9 +14,9 @@
         </div>
       </div>
     </div>
-    <!-->滑动辅助层</!-->
+    <!--滑动辅助层-->
     <div class="bg-layer" ref="layer"></div>
-    <!-->歌曲列表</!-->
+    <!--歌曲列表-->
     <scroll :data="songs" 
       @scroll="scroll"
       :listen-scroll="listenScroll" 

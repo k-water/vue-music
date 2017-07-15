@@ -6,13 +6,13 @@
       @leave="leave"
       @after-leave="afterLeave"
     >
-      <!-->播放页面全屏</!-->
+      <!--播放页面全屏-->
       <div class="normal-player" v-show="fullScreen">
-        <!-->背景 模糊</!-->
+        <!--背景 模糊-->
         <div class="background">
           <img :src="currentSong.image" alt="" width="100%" height="100%">
         </div>
-        <!-->顶部</!-->
+        <!--顶部-->
         <div class="top">
           <div class="back" @click="back">
             <i class="icon-back"></i>
@@ -20,7 +20,7 @@
           <h1 class="title" v-html="currentSong.name"></h1>
           <h2 class="subtitle" v-html="currentSong.singer"></h2>
         </div>
-        <!-->中间cd部分</!-->
+        <!--中间cd部分-->
         <div class="middle">
           <div class="middle-l">
             <div class="cd-wrapper" ref="cdWrapper">
@@ -30,7 +30,7 @@
             </div>
           </div>
         </div>
-        <!-->底部按钮控制部分</!-->
+        <!--底部按钮控制部分-->
         <div class="bottom">
           <div class="operators">
             <div class="icon i-left">
@@ -52,7 +52,7 @@
         </div>
       </div>
     </transition>
-    <!-->播放页面小屏 底部</!-->
+    <!--播放页面小屏 底部-->
     <transition name="mini">
       <div class="mini-player" v-show="!fullScreen" @click="open">
         <div class="icon">
