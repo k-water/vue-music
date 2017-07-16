@@ -113,7 +113,8 @@
         })
       },
       ...mapActions([
-        'selectPlay'
+        'selectPlay',
+        'randomPlay'
       ])
     },
     watch: {
