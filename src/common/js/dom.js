@@ -23,6 +23,7 @@ export function getData(el, name, val) {
 
 let elementStyle = document.createElement('div').style
 
+// IIFE
 let vendor = (() => {
   let transformNames = {
     webkit: 'webkitTransform',
@@ -49,6 +50,6 @@ export function prefixStyle(style) {
   if (vendor === 'standard') {
     return style
   }
-
+  // 拼接 eg：webkitTransform
   return vendor + style.charAt(0).toUpperCase() + style.substr(1)
 }

@@ -73,6 +73,7 @@
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
         <div class="control">
+          <!--阻止冒泡-->
           <i @click.stop="togglePlaying" :class="miniIcon"></i>
         </div>
         <div class="control">
@@ -140,6 +141,7 @@
       updateTime(e) {
         this.currentTime = e.target.currentTime
       },
+      // 格式化时间
       format(interval) {
         interval = interval | 0
         const minute = interval / 60 | 0
@@ -161,6 +163,7 @@
       error() {
         this.songReady = true
       },
+      // 歌曲前进后退
       prev() {
         if (!this.songReady) {
           return
@@ -195,7 +198,7 @@
       open() {
         this.setFullScreen(true)
       },
-
+      // 设置playing状态 watch playing的变化 实现播放暂停
       togglePlaying() {
         if (!this.songReady) {
           return
