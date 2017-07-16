@@ -38,7 +38,7 @@
             </span>
             <!--播放进度条-->
             <div class="progress-bar-wrapper">
-              <progress-bar :percent="percent"></progress-bar>
+              <progress-bar :percent="percent" @percentChange="onProgressBarChange"></progress-bar>
             </div>
             <span class="time time-r">
               {{format(currentSong.duration)}}
@@ -147,6 +147,10 @@
       }
     },
     methods: {
+      // 监听progressBar派发的事件
+      onProgressBarChange(percent) {
+        this.$refs.audio.currentTime = this.currentSong.duration * percent
+      },
       updateTime(e) {
         this.currentTime = e.target.currentTime
       },
