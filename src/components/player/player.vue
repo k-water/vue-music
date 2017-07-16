@@ -150,6 +150,9 @@
       // 监听progressBar派发的事件
       onProgressBarChange(percent) {
         this.$refs.audio.currentTime = this.currentSong.duration * percent
+        if (!this.playing) {
+          this.togglePlaying()
+        }
       },
       updateTime(e) {
         this.currentTime = e.target.currentTime
