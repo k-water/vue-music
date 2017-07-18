@@ -44,6 +44,7 @@
           }
         })
       },
+      // 格式化抓取的数据
       _normalizeSongs(list) {
         let ret = []
         list.forEach((item, index) => {
