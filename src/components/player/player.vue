@@ -21,17 +21,40 @@
           <h2 class="subtitle" v-html="currentSong.singer"></h2>
         </div>
         <!--中间cd部分-->
-        <div class="middle">
-          <div class="middle-l">
+        <div class="middle" 
+          @touchstart.prevent="middleTouchStart"
+          @touchmove.prevent="middleTouchMove"
+          @touchend="middleTouchEnd"
+        >
+          <div class="middle-l" ref="middleL">
             <div class="cd-wrapper" ref="cdWrapper">
               <div class="cd" :class="cdCls">
                 <img :src="currentSong.image" alt="" class="image">
               </div>
             </div>
           </div>
+          <!--歌词滚动-->
+          <scroll class="middle-r" ref="lyriclist" :data="currentLyric && currentLyric.lines">
+            <div class="lyric-wrapper">
+              <div v-if="currentLyric">
+                <p ref="lyricLine" 
+                  class="text" 
+                  v-for="(line, index) in currentLyric.lines" 
+                  :key="line.key"
+                  :class="{'current': currentLineNum === index}"
+                >
+                  {{line.txt}}
+                </p>
+              </div>
+            </div>
+          </scroll>
         </div>
         <!--底部按钮控制部分-->
         <div class="bottom">
+          <div class="dot-wrapper">
+            <span class="dot" :class="{'active' : currentShow === 'cd'}"></span>
+            <span class="dot" :class="{'active' : currentShow === 'lyric'}"></span>
+          </div>
           <div class="progress-wrapper">
             <span class="time time-l">
               {{format(currentTime)}}
@@ -104,20 +127,29 @@
   import { playMode } from 'common/js/config'
   import { shuffle } from 'common/js/until'
   import Lyric from 'lyric-parser'
+  import Scroll from 'base/scroll'
 
   const transform = prefixStyle('transform')
+  const transitionDuration = prefixStyle('transitionDuration')
   export default {
     data() {
       return {
         songReady: false,
         currentTime: 0,
         radius: 32,
-        currentLyric: null
+        currentLyric: null,
+        currentLineNum: 0,
+        currentShow: 'cd'
       }
     },
     components: {
       ProgressBar,
-      ProgressCircle
+      ProgressCircle,
+      Scroll
+    },
+    // 滑动touch
+    created() {
+      this.touch = {}
     },
     // 填充歌曲信息 控制歌曲播放
     computed: {
@@ -213,11 +245,24 @@
         }
         return num
       },
+      // 解析歌词 使用lyric-parser库
       getLyric() {
         this.currentSong.getLyric().then(lyric => {
-          this.currentLyric = new Lyric(lyric)
-          console.log(this.currentLyric)
+          this.currentLyric = new Lyric(lyric, this.handleLyric)
+          if (this.playing) {
+            this.currentLyric.play()
+          }
         })
+      },
+
+      handleLyric({lineNum, txt}) {
+        this.currentLineNum = lineNum
+        if (lineNum > 5) {
+          let lineEl = this.$refs.lyricLine[lineNum - 5]
+          this.$refs.lyriclist.scrollToElement(lineEl, 1000)
+        } else {
+          this.$refs.lyriclist.scrollTo(0, 0, 1000)
+        }
       },
       // 防止快速点击 产生错误
       ready() {
@@ -278,6 +323,72 @@
           return
         }
         this.setPlayingState(!this.playing)
+      },
+
+      middleTouchStart(e) {
+        this.touch.initiated = true
+        // 用来判断是否是一次移动
+        this.touch.moved = false
+        const touch = e.touches[0]
+        this.touch.startX = touch.pageX
+        this.touch.startY = touch.pageY
+      },
+      middleTouchMove(e) {
+        // 没有touchstart 返回
+        if (!this.touch.initiated) {
+          return
+        }
+        const touch = e.touches[0]
+        const deltaX = touch.pageX - this.touch.startX
+        const deltaY = touch.pageY - this.touch.startY
+        // y轴距离大于x轴距离 => 纵向滚动 => 返回
+        if (Math.abs(deltaY) > Math.abs(deltaX)) {
+          return
+        }
+        if (!this.touch.moved) {
+          this.touch.moved = true
+        }
+        const left = this.currentShow === 'cd' ? 0 : -window.innerWidth
+        // 滚动的距离  最大是0
+        const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
+        this.touch.percent = Math.abs(offsetWidth / window.innerWidth)
+        this.$refs.lyriclist.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+        this.$refs.lyriclist.$el.style[transitionDuration] = 0
+        this.$refs.middleL.style.opacity = 1 - this.touch.percent
+        this.$refs.middleL.style[transitionDuration] = 0
+      },
+      middleTouchEnd() {
+        if (!this.touch.moved) {
+          return
+        }
+        let offsetWidth
+        let opacity
+        if (this.currentShow === 'cd') {
+          if (this.touch.percent > 0.1) {
+            offsetWidth = -window.innerWidth
+            opacity = 0
+            this.currentShow = 'lyric'
+          } else {
+            offsetWidth = 0
+            opacity = 1
+          }
+        } else {
+          if (this.touch.percent < 0.9) {
+            offsetWidth = 0
+            this.currentShow = 'cd'
+            opacity = 1
+          } else {
+            offsetWidth = -window.innerWidth
+            opacity = 0
+          }
+        }
+        // 动画缓冲时间
+        const time = 300
+        this.$refs.lyriclist.$el.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+        this.$refs.lyriclist.$el.style[transitionDuration] = `${time}ms`
+        this.$refs.middleL.style.opacity = opacity
+        this.$refs.middleL.style[transitionDuration] = `${time}ms`
+        this.touch.initiated = false
       },
 
       // vue transition 动画钩子
