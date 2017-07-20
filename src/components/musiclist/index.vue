@@ -45,11 +45,13 @@
   import SongsList from 'base/songslist'
   import {prefixStyle} from 'common/js/dom'
   import {mapActions} from 'vuex'
+  import {playListMixin} from 'common/js/mixin'
 
   const RESERVED_HEIGHT = 40
   const transform = prefixStyle('transform')
 
   export default {
+    mixins: [playListMixin],
     props: {
       bgImage: {
         type: String,
@@ -90,7 +92,8 @@
       this.$refs.list.$el.style.top = `${this.imageHeight}px`
     },
     methods: {
-      handlePlaylist(playlist) {
+      // 当底部出现mini播放器的时候 重新计算高度
+      handlePlayList(playlist) {
         const bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.list.$el.style.bottom = bottom
         this.$refs.list.refresh()

@@ -123,6 +123,9 @@
       }
     },
     methods: {
+      refresh() {
+        this.$refs.listView.refresh()
+      },
       onShortcutTouchStart(e) {
         // 获取当前触摸的index
         let anchorIndex = getData(e.target, 'index')
