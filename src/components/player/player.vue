@@ -186,6 +186,11 @@
         if (newSong === oldSong) {
           return
         }
+
+        // 防止歌词切换跳动
+        if (this.currentLyric) {
+          this.currentLyric.stop()
+        }
         this.$nextTick(() => {
           this.$refs.audio.play()
           this.getLyric()
@@ -222,9 +227,14 @@
       },
       // 监听progressBar派发的事件
       onProgressBarChange(percent) {
-        this.$refs.audio.currentTime = this.currentSong.duration * percent
+        const currentTime = this.currentSong.duration * percent
+        this.$refs.audio.currentTime = currentTime
         if (!this.playing) {
           this.togglePlaying()
+        }
+        // 点击或滑动 歌曲进度条 歌词滚动到对应的位置
+        if (this.currentLyric) {
+          this.currentLyric.seek(currentTime * 1000)
         }
       },
       updateTime(e) {
@@ -310,6 +320,11 @@
       loop() {
         this.$refs.audio.currentTime = 0
         this.$refs.audio.play()
+
+        // 循环播放 歌词回到开始的时候
+        if (this.currentLyric) {
+          this.currentLyric.seek(0)
+        }
       },
       back() {
         this.setFullScreen(false)
@@ -323,6 +338,11 @@
           return
         }
         this.setPlayingState(!this.playing)
+
+        // 歌词随着歌曲播放暂停而滚动或暂停滚动
+        if (this.currentLyric) {
+          this.currentLyric.togglePlay()
+        }
       },
 
       middleTouchStart(e) {
