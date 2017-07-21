@@ -25,7 +25,8 @@
       ref="list"
     >
       <div class="song-list-wrapper">
-        <songs-list :songs="songs" 
+        <songs-list 
+          :songs="songs" 
           :rank="rank" 
           @select="selectItem"
         >
