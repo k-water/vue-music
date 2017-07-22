@@ -14,6 +14,7 @@ export function shuffle(arr) {
   return _arr
 }
 
+// 函数节流
 export function debounce(func, delay) {
   let timer
 
