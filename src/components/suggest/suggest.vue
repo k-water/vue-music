@@ -11,6 +11,7 @@
         class="suggest-item"
         v-for="item in result"
         :key="item.key"
+        @click="selectItem(item)"
       >
         <div class="icon">
           <i :class="getIconCls(item)"></i>
@@ -26,8 +27,10 @@
   import { ERR_OK } from 'api/config'
   import { search } from 'api/search'
   import { createSong } from 'common/js/song'
+  import Singer from 'common/js/singer'
   import Scroll from 'base/scroll'
   import Loading from 'base/loading'
+  import { mapMutations, mapActions } from 'vuex'
   const TYPE_SINGER = 'singer'
   const perpage = 20
   export default {
@@ -54,6 +57,12 @@
       }
     },
     methods: {
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+      }),
+      ...mapActions([
+        'insertSong'
+      ]),
       search() {
         this.page = 1
         this.hasMore = true
@@ -82,6 +91,20 @@
         const song = data.song
         if (!song.list.length || (song.curnum + song.curpage * perpage) > song.totalnum) {
           this.hasMore = false
+        }
+      },
+      selectItem(item) {
+        if (item.type === TYPE_SINGER) {
+          const singer = new Singer({
+            id: item.singermid,
+            name: item.singername
+          })
+          this.$router.push({
+            path: `/search/${singer.id}`
+          })
+          this.setSinger(singer)
+        } else {
+          this.insertSong(item)
         }
       },
       getIconCls(item) {
