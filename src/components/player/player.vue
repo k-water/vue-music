@@ -130,7 +130,7 @@
   import animations from 'create-keyframe-animation'
   import ProgressCircle from 'base/progress-circle/progress-circle'
   import { playMode } from 'common/js/config'
-  import { shuffle } from 'common/js/until'
+  import { shuffle } from 'common/js/util'
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll'
 
