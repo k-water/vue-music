@@ -1,5 +1,11 @@
 <template>
-  <div class="suggest">
+  <scroll 
+    class="suggest" 
+    :data="result"
+    :pullUp="pullUp"
+    @scrollToEnd="searchMore"
+    ref="suggest"
+  >
     <ul class="suggest-list">
       <li 
         class="suggest-item"
@@ -14,14 +20,21 @@
         </div>
       </li>
     </ul>
-  </div>
+  </scroll>
 </template>
 <script>
   import { ERR_OK } from 'api/config'
   import { search } from 'api/search'
   import { createSong } from 'common/js/song'
+  import Scroll from 'base/scroll'
+  import Loading from 'base/loading'
   const TYPE_SINGER = 'singer'
+  const perpage = 20
   export default {
+    components: {
+      Scroll,
+      Loading
+    },
     props: {
       query: {
         type: String,
@@ -35,17 +48,41 @@
     data() {
       return {
         page: 1,
-        result: []
+        result: [],
+        pullUp: true,
+        hasMore: true
       }
     },
     methods: {
       search() {
-        search(this.query, this.page, this.showSinger)
+        this.page = 1
+        this.hasMore = true
+        this.$refs.suggest.scrollTo(0, 0)
+        search(this.query, this.page, this.showSinger, perpage)
           .then(res => {
             if (res.code === ERR_OK) {
               this.result = this._getResult(res.data)
+              this._checkHasMore(res.data)
             }
           })
+      },
+      searchMore() {
+        if (!this.hasMore) return
+        this.page ++
+        search(this.query, this.page, this.showSinger, perpage)
+          .then(res => {
+            if (res.code === ERR_OK) {
+              this.result = this.result.concat(this._getResult(res.data))
+              this._checkHasMore(res.data)
+            }
+          })
+      },
+      // 判断是否已加载完
+      _checkHasMore(data) {
+        const song = data.song
+        if (!song.list.length || (song.curnum + song.curpage * perpage) > song.totalnum) {
+          this.hasMore = false
+        }
       },
       getIconCls(item) {
         if (item.type === TYPE_SINGER) {
