@@ -49,11 +49,19 @@
       </suggest>
     </div>
     <router-view></router-view>
+    <confirm
+      ref="confirm"
+      @confirm="clearSearchHistory"
+      text="是否清空所有搜索历史"
+      confirmBtnText="清空"
+    >
+    </confirm>
   </div>
 </template>
 <script>
   import SearchBox from 'base/search-box/search-box'
   import SearchList from 'base/search-list/search-list'
+  import Confirm from 'base/confirm/confirm'
   import { ERR_OK } from 'api/config'
   import { getHotKey } from 'api/search'
   import Suggest from 'components/suggest/suggest'
@@ -62,7 +70,8 @@
     components: {
       SearchBox,
       Suggest,
-      SearchList
+      SearchList,
+      Confirm
     },
     data() {
       return {
@@ -81,13 +90,14 @@
     methods: {
       ...mapActions([
         'saveSearchHistory',
-        'deleteSearchHistory'
+        'deleteSearchHistory',
+        'clearSearchHistory'
       ]),
       saveSearch() {
         this.saveSearchHistory(this.query)
       },
       showConfirm() {
-
+        this.$refs.confirm.show()
       },
       blurInput() {
         this.$refs.searchBox.blur()
@@ -98,6 +108,7 @@
       addQuery(query) {
         this.$refs.searchBox.setQuery(query)
       },
+      // 截取前10个作为热门搜索key
       _getHotKey() {
         getHotKey().then(res => {
           if (res.code === ERR_OK) {
