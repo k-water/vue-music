@@ -20,9 +20,27 @@
             </li>
           </ul>
         </div>
+        <!--搜索历史部分-->
+        <div class="search-history" v-show="searchHistory.length">
+          <h1 class="title">
+            <span class="text">搜索历史</span>
+            <span @click="showConfirm" class="clear">
+              <i class="icon-clear"></i>
+            </span>
+          </h1>
+          <!--搜索历史列表-->
+          <search-list
+            @delete="deleteSearchHistory" 
+            @select="addQuery" 
+            :searches="searchHistory"
+          >
+          </search-list>
+
+        </div>
       </div>
     </div>
     <div class="search-result" v-show="query">
+      <!--搜索结果component-->
       <suggest 
         :query="query" 
         @listScroll="blurInput"
@@ -35,14 +53,16 @@
 </template>
 <script>
   import SearchBox from 'base/search-box/search-box'
+  import SearchList from 'base/search-list/search-list'
   import { ERR_OK } from 'api/config'
   import { getHotKey } from 'api/search'
   import Suggest from 'components/suggest/suggest'
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   export default {
     components: {
       SearchBox,
-      Suggest
+      Suggest,
+      SearchList
     },
     data() {
       return {
@@ -50,15 +70,24 @@
         query: ''
       }
     },
+    computed: {
+      ...mapGetters([
+        'searchHistory'
+      ])
+    },
     created() {
       this._getHotKey()
     },
     methods: {
       ...mapActions([
-        'saveSearchHistory'
+        'saveSearchHistory',
+        'deleteSearchHistory'
       ]),
       saveSearch() {
         this.saveSearchHistory(this.query)
+      },
+      showConfirm() {
+
       },
       blurInput() {
         this.$refs.searchBox.blur()
