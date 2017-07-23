@@ -6,8 +6,12 @@
       <!--suggest component 监听到query值的变化调用search函数-->
       <search-box ref="searchBox" @query="onQueryChange"></search-box>
     </div>
-    <div class="shortcut-wrapper" v-show="!query">
-      <div class="shortcut">
+    <div class="shortcut-wrapper" v-show="!query" ref="shortcutWrapper">
+      <scroll 
+        class="shortcut"
+        :data="shortCut"
+        ref="shortcut"
+      >
         <div class="hot-key">
           <h1 class="title">热门搜索</h1>
           <ul>
@@ -35,16 +39,16 @@
             :searches="searchHistory"
           >
           </search-list>
-
         </div>
-      </div>
+      </scroll>
     </div>
-    <div class="search-result" v-show="query">
+    <div class="search-result" v-show="query" ref="searchResult">
       <!--搜索结果component-->
       <suggest 
         :query="query" 
         @listScroll="blurInput"
         @select="saveSearch"
+        ref="suggest"
       >
       </suggest>
     </div>
@@ -61,17 +65,21 @@
 <script>
   import SearchBox from 'base/search-box/search-box'
   import SearchList from 'base/search-list/search-list'
+  import Scroll from 'base/scroll'
   import Confirm from 'base/confirm/confirm'
   import { ERR_OK } from 'api/config'
   import { getHotKey } from 'api/search'
   import Suggest from 'components/suggest/suggest'
   import { mapActions, mapGetters } from 'vuex'
+  import { playListMixin } from 'common/js/mixin'
   export default {
+    mixins: [playListMixin],
     components: {
       SearchBox,
       Suggest,
       SearchList,
-      Confirm
+      Confirm,
+      Scroll
     },
     data() {
       return {
@@ -82,7 +90,10 @@
     computed: {
       ...mapGetters([
         'searchHistory'
-      ])
+      ]),
+      shortCut() {
+        return this.hotkey.concat(this.searchHistory)
+      }
     },
     created() {
       this._getHotKey()
@@ -93,6 +104,16 @@
         'deleteSearchHistory',
         'clearSearchHistory'
       ]),
+      // mini底部自适应
+      handlePlayList(playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+
+        this.$refs.searchResult.style.bottom = bottom
+        this.$refs.suggest.refresh()
+
+        this.$refs.shortcutWrapper.style.bottom = bottom
+        this.$refs.shortcut.refresh()
+      },
       saveSearch() {
         this.saveSearchHistory(this.query)
       },

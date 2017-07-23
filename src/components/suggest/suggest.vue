@@ -73,6 +73,9 @@
       ...mapActions([
         'insertSong'
       ]),
+      refresh() {
+        this.$refs.suggest.refresh()
+      },
       // scroll 派发 beforeScroll
       // suggest 监听 beforeScroll
       // 同时派发 listScroll
