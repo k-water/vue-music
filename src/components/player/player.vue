@@ -108,11 +108,12 @@
             <i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
           </progress-circle>
         </div>
-        <div class="control">
+        <div class="control" @click.stop="showPlayList">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
+    <play-list ref="playList"></play-list>
     <audio :src="currentSong.url" 
       ref="audio" 
       @canplay="ready" 
@@ -130,13 +131,15 @@
   import animations from 'create-keyframe-animation'
   import ProgressCircle from 'base/progress-circle/progress-circle'
   import { playMode } from 'common/js/config'
-  import { shuffle } from 'common/js/util'
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll'
+  import PlayList from 'base/playlist/playlist'
+  import { playerMixin } from 'common/js/mixin'
 
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
   export default {
+    mixins: [playerMixin],
     data() {
       return {
         songReady: false,
@@ -151,7 +154,8 @@
     components: {
       ProgressBar,
       ProgressCircle,
-      Scroll
+      Scroll,
+      PlayList
     },
     // 滑动touch
     created() {
@@ -179,16 +183,15 @@
       },
       ...mapGetters([
         'fullScreen',
-        'playList',
-        'currentSong',
         'playing',
-        'currentIndex',
-        'mode',
-        'sequenceList'
+        'currentIndex'
       ])
     },
     watch: {
       currentSong(newSong, oldSong) {
+        // 当列表没有歌曲时 直接return
+        if (!newSong.id) return
+
         if (newSong === oldSong) {
           return
         }
@@ -210,27 +213,6 @@
       }
     },
     methods: {
-      // 改变播放模式
-      changeMode() {
-        const mode = (this.mode + 1) % 3
-        this.setPlayMode(mode)
-
-        let list = null
-        if (mode === playMode.random) {
-          list = shuffle(this.sequenceList)
-        } else {
-          list = this.sequenceList
-        }
-        this._resetCurrentIndex(list)
-        this.setPlayList(list)
-      },
-      // 重新设置歌曲打乱后的Index
-      _resetCurrentIndex(list) {
-        let index = list.findIndex((item) => {
-          return item.id === this.currentSong.id
-        })
-        this.setCurrentIndex(index)
-      },
       // 监听progressBar派发的事件
       onProgressBarChange(percent) {
         const currentTime = this.currentSong.duration * percent
@@ -494,12 +476,14 @@
           scale
         }
       },
+
+      // 歌曲列表
+      showPlayList() {
+        this.$refs.playList.show()
+      },
+
       ...mapMutations({
-        setFullScreen: 'SET_FULL_SCREEN',
-        setPlayingState: 'SET_PLAYING_STATE',
-        setCurrentIndex: 'SET_CURRENT_INDEX',
-        setPlayMode: 'SET_PLAY_MODE',
-        setPlayList: 'SET_PLAYLIST'
+        setFullScreen: 'SET_FULL_SCREEN'
       })
     }
   }
