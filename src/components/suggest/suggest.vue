@@ -36,7 +36,7 @@
   import Singer from 'common/js/singer'
   import Scroll from 'base/scroll'
   import Loading from 'base/loading'
-  import NoResult from 'base/no-result/no-result'
+  import NoResult from 'base/noResult/noResult'
 
   import { mapMutations, mapActions } from 'vuex'
   const TYPE_SINGER = 'singer'

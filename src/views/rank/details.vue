@@ -4,7 +4,7 @@
   </transition>
 </template>
 <script>
-  import MusicList from 'components/musiclist'
+  import MusicList from 'components/musicList/musicList'
   import { mapGetters } from 'vuex'
   import { getTopListDetail } from 'api/rank'
   import { ERR_OK } from 'api/config'

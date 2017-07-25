@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  import MHeader from 'components/m-header/m-header'
+  import MHeader from 'components/mHeader/mHeader'
   import Tab from 'components/tab'
   import Player from 'components/player/player'
   export default {

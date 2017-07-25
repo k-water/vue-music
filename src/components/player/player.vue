@@ -127,13 +127,13 @@
 <script>
   import { mapGetters, mapMutations } from 'vuex'
   import { prefixStyle } from 'common/js/dom'
-  import ProgressBar from 'base/progress-bar/progress-bar'
+  import ProgressBar from 'base/progressBar/progressBar'
   import animations from 'create-keyframe-animation'
-  import ProgressCircle from 'base/progress-circle/progress-circle'
+  import ProgressCircle from 'base/progressCircle/progressCircle'
   import { playMode } from 'common/js/config'
   import Lyric from 'lyric-parser'
   import Scroll from 'base/scroll'
-  import PlayList from 'base/playlist/playlist'
+  import PlayList from 'base/playList/playList'
   import { playerMixin } from 'common/js/mixin'
 
   const transform = prefixStyle('transform')

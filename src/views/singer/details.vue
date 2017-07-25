@@ -8,7 +8,7 @@
   import { getSingerDetail } from 'api/singer'
   import { ERR_OK } from 'api/config'
   import { createSong } from 'common/js/song'
-  import MusicList from 'components/musiclist'
+  import MusicList from 'components/musicList/musicList'
   export default {
     data() {
       return {

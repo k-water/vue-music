@@ -25,12 +25,12 @@
       ref="list"
     >
       <div class="song-list-wrapper">
-        <songs-list 
+        <song-list 
           :songs="songs" 
           :rank="rank" 
           @select="selectItem"
         >
-        </songs-list>
+        </song-list>
       </div>
       <!--加载loading-->
       <div v-show="!songs.length" class="loading-container">
@@ -43,7 +43,7 @@
 <script>
   import Scroll from 'base/scroll'
   import Loading from 'base/loading'
-  import SongsList from 'base/songslist'
+  import SongList from 'base/songList/songList'
   import {prefixStyle} from 'common/js/dom'
   import {mapActions} from 'vuex'
   import {playListMixin} from 'common/js/mixin'
@@ -151,7 +151,7 @@
     components: {
       Scroll,
       Loading,
-      SongsList
+      SongList
     }
   }
 </script>

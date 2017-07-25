@@ -63,8 +63,8 @@
   </div>
 </template>
 <script>
-  import SearchBox from 'base/search-box/search-box'
-  import SearchList from 'base/search-list/search-list'
+  import SearchBox from 'base/searchBox/searchBox'
+  import SearchList from 'base/searchList/searchList'
   import Scroll from 'base/scroll'
   import Confirm from 'base/confirm/confirm'
   import { ERR_OK } from 'api/config'

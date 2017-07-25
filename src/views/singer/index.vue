@@ -1,6 +1,6 @@
 <template>
   <div class="singer" ref="singer">
-    <list-view :data="singers" @select="selectSinger" ref="list"></list-view>
+    <singer-list :data="singers" @select="selectSinger" ref="list"></singer-list>
     <router-view></router-view>
   </div>
 </template>
@@ -8,7 +8,7 @@
   import { getSingerList } from 'api/singer'
   import { ERR_OK } from 'api/config'
   import Singer from 'common/js/singer'
-  import ListView from 'base/listview'
+  import SingerList from 'base/singerList/singerList'
   import { mapMutations } from 'vuex'
   import { playListMixin } from 'common/js/mixin'
   const HOT_NAME = '热门'
@@ -24,7 +24,7 @@
       this._getSingerList()
     },
     components: {
-      ListView
+      SingerList
     },
     methods: {
       handlePlayList(playlist) {

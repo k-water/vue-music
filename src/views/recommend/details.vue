@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import MusicList from 'components/musiclist'
+  import MusicList from 'components/musicList/musicList'
   import {getSongList} from 'api/recommend'
   import {ERR_OK} from 'api/config'
   import {mapGetters} from 'vuex'
