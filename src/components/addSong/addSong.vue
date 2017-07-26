@@ -34,6 +34,22 @@
               <song-list :songs="playHistory" @select="selectSong"></song-list>
             </div>
           </scroll>
+
+           <scroll 
+             ref="searchList" 
+             v-if="currentIndex===1"
+             class="list-scroll"
+            :data="searchHistory"
+          >
+            <div class="list-inner">
+              <search-list 
+                @delete="deleteSearchHistory" 
+                @select="addQuery" 
+                :searches="searchHistory"
+              >
+              </search-list>
+            </div>
+          </scroll>
         </div>
       </div>
       <div class="search-result" v-show="query">
@@ -57,6 +73,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import SongList from 'base/songList/songList'
   import Song from 'common/js/song'
+  import SearchList from 'base/searchList/searchList'
   export default {
     mixins: [searchMixin],
     components: {
@@ -64,7 +81,8 @@
       Suggest,
       Switches,
       Scroll,
-      SongList
+      SongList,
+      SearchList
     },
     computed: {
       ...mapGetters([
@@ -85,9 +103,12 @@
     methods: {
       show() {
         this.showFlag = true
+        // 刷新重新计算高度
         setTimeout(() => {
           if (this.currentIndex === 0) {
             this.$refs.songList.refresh()
+          } else {
+            this.$refs.searchList.refresh()
           }
         }, 20)
       },
