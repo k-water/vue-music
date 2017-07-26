@@ -35,11 +35,11 @@ export const playerMixin = {
       'sequenceList',
       'playList',
       'currentSong',
-      'mode'
+      'mode',
+      'favoriteList'
     ])
   },
   methods: {
-    // 改变播放模式
     changeMode() {
       const mode = (this.mode + 1) % 3
       this.setPlayMode(mode)
@@ -52,19 +52,41 @@ export const playerMixin = {
       this.resetCurrentIndex(list)
       this.setPlaylist(list)
     },
-    // 重新设置歌曲打乱后的Index
     resetCurrentIndex(list) {
       let index = list.findIndex((item) => {
         return item.id === this.currentSong.id
       })
       this.setCurrentIndex(index)
     },
+    toggleFavorite(song) {
+      if (this.isFavorite(song)) {
+        this.deleteFavoriteList(song)
+      } else {
+        this.saveFavoriteList(song)
+      }
+    },
+    getFavoriteIcon(song) {
+      if (this.isFavorite(song)) {
+        return 'icon-favorite'
+      }
+      return 'icon-not-favorite'
+    },
+    isFavorite(song) {
+      const index = this.favoriteList.findIndex((item) => {
+        return item.id === song.id
+      })
+      return index > -1
+    },
     ...mapMutations({
       setPlayMode: 'SET_PLAY_MODE',
       setPlaylist: 'SET_PLAYLIST',
       setCurrentIndex: 'SET_CURRENT_INDEX',
       setPlayingState: 'SET_PLAYING_STATE'
-    })
+    }),
+    ...mapActions([
+      'saveFavoriteList',
+      'deleteFavoriteList'
+    ])
   }
 }
 

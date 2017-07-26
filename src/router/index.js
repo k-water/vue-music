@@ -8,6 +8,7 @@ import Rank from 'views/rank'
 import SingerDetail from 'views/singer/details'
 import RecommendDetail from 'views/recommend/details'
 import RankDetail from 'views/rank/details'
+import UserCenter from 'components/userCenter/userCenter'
 Vue.use(Router)
 
 export default new Router({
@@ -44,5 +45,8 @@ export default new Router({
       path: '/rank/:id',
       component: RankDetail
     }]
+  }, {
+    path: '/user',
+    component: UserCenter
   }]
 })
