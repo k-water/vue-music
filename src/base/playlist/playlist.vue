@@ -15,6 +15,7 @@
           class="list-content" 
           :data="sequenceList"
           ref="listContent"
+          :refreshDelay="refreshDelay"
         >
           <transition-group tag="ul" name="list">
             <li 
@@ -67,7 +68,8 @@
     mixins: [playerMixin],
     data() {
       return {
-        showFlag: false
+        showFlag: false,
+        refreshDelay: 100
       }
     },
     components: {

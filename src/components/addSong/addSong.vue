@@ -40,6 +40,7 @@
              v-if="currentIndex===1"
              class="list-scroll"
             :data="searchHistory"
+            :refreshDelay="refreshDelay"
           >
             <div class="list-inner">
               <search-list 
@@ -61,6 +62,12 @@
         >
         </suggest>
       </div>
+      <top-tips ref="topTip">
+        <div class="tip-title">
+          <i class="icon-ok"></i>
+          <span class="text">1首歌曲已经添加到播放列表</span>
+        </div>
+      </top-tips>
     </div>
   </transition>
 </template>
@@ -74,6 +81,7 @@
   import SongList from 'base/songList/songList'
   import Song from 'common/js/song'
   import SearchList from 'base/searchList/searchList'
+  import TopTips from 'base/topTips/topTips'
   export default {
     mixins: [searchMixin],
     components: {
@@ -82,7 +90,8 @@
       Switches,
       Scroll,
       SongList,
-      SearchList
+      SearchList,
+      TopTips
     },
     computed: {
       ...mapGetters([
@@ -118,6 +127,7 @@
       // 保存搜索历史
       selectSuggest() {
         this.saveSearch()
+        this.$refs.topTip.show()
       },
 
       switchItem(index) {
@@ -127,6 +137,7 @@
       selectSong(song, index) {
         if (index !== 0) {
           this.insertSong(new Song(song))
+          this.$refs.topTip.show()
         }
       },
       ...mapActions([
