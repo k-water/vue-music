@@ -12,7 +12,7 @@ import store from './store'
 
 // Vue.use(axios)
 Vue.use(VueLazyLoad, {
-  loading: require('./components/m-header/logo@2x.png')
+  loading: require('./components/mHeader/logo@2x.png')
 })
 Vue.config.productionTip = false
 fastclick.attach(document.body)

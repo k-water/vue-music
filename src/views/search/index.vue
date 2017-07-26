@@ -70,10 +70,10 @@
   import { ERR_OK } from 'api/config'
   import { getHotKey } from 'api/search'
   import Suggest from 'components/suggest/suggest'
-  import { mapActions, mapGetters } from 'vuex'
-  import { playListMixin } from 'common/js/mixin'
+  import { mapActions } from 'vuex'
+  import { playListMixin, searchMixin } from 'common/js/mixin'
   export default {
-    mixins: [playListMixin],
+    mixins: [playListMixin, searchMixin],
     components: {
       SearchBox,
       Suggest,
@@ -83,14 +83,10 @@
     },
     data() {
       return {
-        hotkey: [],
-        query: ''
+        hotkey: []
       }
     },
     computed: {
-      ...mapGetters([
-        'searchHistory'
-      ]),
       shortCut() {
         return this.hotkey.concat(this.searchHistory)
       }
@@ -100,8 +96,6 @@
     },
     methods: {
       ...mapActions([
-        'saveSearchHistory',
-        'deleteSearchHistory',
         'clearSearchHistory'
       ]),
       // mini底部自适应
@@ -114,20 +108,8 @@
         this.$refs.shortcutWrapper.style.bottom = bottom
         this.$refs.shortcut.refresh()
       },
-      saveSearch() {
-        this.saveSearchHistory(this.query)
-      },
       showConfirm() {
         this.$refs.confirm.show()
-      },
-      blurInput() {
-        this.$refs.searchBox.blur()
-      },
-      onQueryChange(query) {
-        this.query = query
-      },
-      addQuery(query) {
-        this.$refs.searchBox.setQuery(query)
       },
       // 截取前10个作为热门搜索key
       _getHotKey() {

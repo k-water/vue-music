@@ -36,7 +36,7 @@
           </transition-group>
         </scroll>
         <div class="list-operate">
-          <div class="add">
+          <div class="add" @click="addSong">
             <i class="icon-add"></i>
             <span class="text">添加歌曲到队列</span>
           </div>
@@ -45,7 +45,14 @@
           <span>关闭</span>
         </div>
       </div>
-      <confirm text="是否清空播放列表" @confirm="confirmClear" ref="confirm" confirmBtnText="清空"></confirm>
+      <confirm
+        text="是否清空播放列表" 
+        @confirm="confirmClear" 
+        ref="confirm" 
+        confirmBtnText="清空"
+      >
+        </confirm>
+      <add-song ref="addSong"></add-song>
     </div>
   </transition>
 </template>
@@ -55,6 +62,7 @@
   import { playMode } from 'common/js/config'
   import Confirm from 'base/confirm/confirm'
   import { playerMixin } from 'common/js/mixin'
+  import AddSong from 'components/addSong/addSong'
   export default {
     mixins: [playerMixin],
     data() {
@@ -64,7 +72,8 @@
     },
     components: {
       Scroll,
-      Confirm
+      Confirm,
+      AddSong
     },
     computed: {
       modeText() {
@@ -117,6 +126,10 @@
           return current.id === song.id
         })
         this.$refs.listContent.scrollToElement(this.$refs.listItem[index], 300)
+      },
+
+      addSong() {
+        this.$refs.addSong.show()
       }
     },
     // 歌曲切换成功 执行ScrollToCurrent
