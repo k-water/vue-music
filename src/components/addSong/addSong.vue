@@ -22,6 +22,19 @@
           @switch="switchItem"
         >
         </switches>
+
+        <div class="list-wrapper">
+          <scroll 
+            v-if="currentIndex === 0" 
+            :data="playHistory" 
+            class="list-scroll"
+            ref="songList"
+          >
+            <div class="list-inner">
+              <song-list :songs="playHistory" @select="selectSong"></song-list>
+            </div>
+          </scroll>
+        </div>
       </div>
       <div class="search-result" v-show="query">
         <suggest
@@ -30,7 +43,7 @@
           @select="selectSuggest"
           @listScroll="blurInput"
         >
-        </suggest> 
+        </suggest>
       </div>
     </div>
   </transition>
@@ -40,12 +53,23 @@
   import Suggest from 'components/suggest/suggest'
   import { searchMixin } from 'common/js/mixin'
   import Switches from 'base/switches/switches'
+  import Scroll from 'base/scroll'
+  import { mapGetters, mapActions } from 'vuex'
+  import SongList from 'base/songList/songList'
+  import Song from 'common/js/song'
   export default {
     mixins: [searchMixin],
     components: {
       SearchBox,
       Suggest,
-      Switches
+      Switches,
+      Scroll,
+      SongList
+    },
+    computed: {
+      ...mapGetters([
+        'playHistory'
+      ])
     },
     data() {
       return {
@@ -61,6 +85,11 @@
     methods: {
       show() {
         this.showFlag = true
+        setTimeout(() => {
+          if (this.currentIndex === 0) {
+            this.$refs.songList.refresh()
+          }
+        }, 20)
       },
       hide() {
         this.showFlag = false
@@ -72,7 +101,16 @@
 
       switchItem(index) {
         this.currentIndex = index
-      }
+      },
+
+      selectSong(song, index) {
+        if (index !== 0) {
+          this.insertSong(new Song(song))
+        }
+      },
+      ...mapActions([
+        'insertSong'
+      ])
     }
   }
 </script>

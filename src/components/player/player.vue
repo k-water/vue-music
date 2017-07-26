@@ -125,7 +125,7 @@
   </div>
 </template>
 <script>
-  import { mapGetters, mapMutations } from 'vuex'
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
   import { prefixStyle } from 'common/js/dom'
   import ProgressBar from 'base/progressBar/progressBar'
   import animations from 'create-keyframe-animation'
@@ -270,6 +270,7 @@
       // 防止快速点击 产生错误
       ready() {
         this.songReady = true
+        this.savePlayHistory(this.currentSong)
       },
       error() {
         this.songReady = true
@@ -484,7 +485,10 @@
 
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN'
-      })
+      }),
+      ...mapActions([
+        'savePlayHistory'
+      ])
     }
   }
 </script>
