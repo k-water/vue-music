@@ -121,7 +121,7 @@
     <play-list ref="playList"></play-list>
     <audio :src="currentSong.url" 
       ref="audio" 
-      @canplay="ready" 
+      @play="ready" 
       @error="error"
       @timeupdate="updateTime"
       @ended="ended"
@@ -205,7 +205,8 @@
         if (this.currentLyric) {
           this.currentLyric.stop()
         }
-        setTimeout(() => {
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
           this.$refs.audio.play()
           this.getLyric()
         }, 1000)

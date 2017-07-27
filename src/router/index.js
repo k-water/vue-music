@@ -1,15 +1,55 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Recommend from 'views/recommend'
-import Singer from 'views/singer'
-import Search from 'views/search'
-import Rank from 'views/rank'
-import SingerDetail from 'views/singer/details'
-import RecommendDetail from 'views/recommend/details'
-import RankDetail from 'views/rank/details'
-import UserCenter from 'components/userCenter/userCenter'
 Vue.use(Router)
+
+const Recommend = resolve => {
+  import('views/recommend').then(module => {
+    resolve(module)
+  })
+}
+
+const Singer = resolve => {
+  import('views/singer').then(module => {
+    resolve(module)
+  })
+}
+
+const Search = resolve => {
+  import('views/search').then(module => {
+    resolve(module)
+  })
+}
+
+const Rank = resolve => {
+  import('views/rank').then(module => {
+    resolve(module)
+  })
+}
+
+const SingerDetail = resolve => {
+  import('views/singer/details').then(module => {
+    resolve(module)
+  })
+}
+
+const RecommendDetail = resolve => {
+  import('views/recommend/details').then(module => {
+    resolve(module)
+  })
+}
+
+const RankDetail = resolve => {
+  import('views/rank/details').then(module => {
+    resolve(module)
+  })
+}
+
+const UserCenter = resolve => {
+  import('components/userCenter/userCenter').then(module => {
+    resolve(module)
+  })
+}
 
 export default new Router({
   routes: [{
