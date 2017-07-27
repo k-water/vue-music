@@ -28,7 +28,7 @@ PS：具体代码请看`prod.server.js`文件
 * [x] Axios
 
 #### src目录结构
-![](https://oc1gyfe6q.qnssl.com/17-7-27/30352734.jpg)
+![](https://oc1gyfe6q.qnssl.com/17-7-27/71529472.jpg)
 ### 构建
 #### 开发环境
 
