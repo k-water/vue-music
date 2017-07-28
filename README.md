@@ -67,8 +67,6 @@ PS：具体代码请看`prod.server.js`文件
 ### 效果
 ![](https://oc1gyfe6q.qnssl.com/17-7-28/29546400.jpg)
 ![](https://oc1gyfe6q.qnssl.com/17-7-28/80941247.jpg)
-![](https://oc1gyfe6q.qnssl.com/17-7-28/57875654.jpg)
-![](https://oc1gyfe6q.qnssl.com/17-7-28/8283711.jpg)
 ### 构建
 #### 开发环境
 
