@@ -93,31 +93,10 @@
           path: `/recommend/${item.dissid}`
         })
         this.setDisc(item)
-        console.log(this.$store.state.disc)
       },
       ...mapMutations({
         setDisc: 'SET_DISC'
       })
-      // _getRecommend () {
-      //   let params = {
-      //     g_tk: 5381,
-      //     uin: 0,
-      //     format: 'json',
-      //     inCharset: 'utf-8',
-      //     outCharset: 'utf-8',
-      //     notice: 0,
-      //     platform: 'h5',
-      //     needNewCode: 1
-      //   }
-      //   const url = 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg?'
-      //   this.$http.get(url, {
-      //     params: params
-      //   }).then(res => {
-      //     console.log(res.data.slider)
-      //   }).catch(error => {
-      //     console.log(error)
-      //   })
-      // }
     }
   }
 </script>
